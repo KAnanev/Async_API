@@ -3,7 +3,7 @@ movies_query = """
             fw.id uuid,
             fw.title,
             fw.rating AS imdb_rating,
-            fw.description,
+            COALESCE(fw.description, '') as description,
             array_agg(DISTINCT jsonb_build_object ('uuid', g.id, 'name', g.name)) AS genre,
             array_agg(DISTINCT jsonb_build_object ('uuid', p.id, 'full_name', p.full_name)) FILTER (WHERE pfw.role = 'actor') AS actors,
             array_agg(DISTINCT jsonb_build_object ('uuid', p.id, 'full_name', p.full_name)) FILTER (WHERE pfw.role = 'writer') AS writers,
