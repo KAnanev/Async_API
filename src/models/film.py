@@ -9,7 +9,7 @@ class Film(MoviesBaseModel):
     title: str
     imdb_rating: float = 0.0
     description: Optional[str] = ''
-    genre: List[dict]  = [{}]
+    genre: List[dict] = [{}]
     actors: List[dict] = [{}]
     writers: List[dict] = [{}]
     directors: List[dict] = [{}]
