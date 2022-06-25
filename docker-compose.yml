@@ -36,6 +36,8 @@ services:
     depends_on:
       - redis
       - elasticsearch
+    entrypoint: [ "python", "-m", "gunicorn", "main:app",
+                  "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000" ]
 
   web:
     image: 'nginx:1.20-alpine'

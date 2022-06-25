@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch_test:/usr/share/elasticsearch/data
+
+  redis:
+    image: 'redis:7'
+
+  api:
+    build:
+      context: ../../
+    image: api-image
+    env_file:
+      - ../../.env
+    depends_on:
+      - redis
+      - elasticsearch
+    entrypoint: ["python", "-m", "gunicorn", "main:app",
+                 "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+
+  tests:
+    image: api-image
+    depends_on:
+      - api
+    entrypoint: >
+      sh -c "pip install -r tests/functional/requirements.txt
+      && python3 tests/functional/utils/wait_for_es.py
+      && python3 tests/functional/utils/wait_for_redis.py
+      && pytest tests/functional/src"
+
+
+volumes:
+  elasticsearch_test:
