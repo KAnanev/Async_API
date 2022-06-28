@@ -15,8 +15,9 @@ class ElasticLoader:
 
     def read_index_file(self, name_index: str) -> dict:
         index_file_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'indexes', name_index + '.json'
-            )
+            os.path.dirname(os.path.abspath(__file__)),
+            'indexes', name_index + '.json')
+
         with open(index_file_path) as f:
             return json.load(f)
 

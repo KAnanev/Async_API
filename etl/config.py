@@ -15,7 +15,8 @@ logging.basicConfig(
             sys.stdout
         ),
         RotatingFileHandler(
-            filename="{}/elastic.log".format(os.path.dirname(os.path.abspath(__file__))),
+            filename="{}/elastic.log".format(
+                os.path.dirname(os.path.abspath(__file__))),
             maxBytes=10000000,
             backupCount=10)]
     )
@@ -24,7 +25,8 @@ logger = logging.getLogger()
 
 index_names = ('movies', 'persons', 'genres')
 
-state_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'state', '') + 'state.json'
+state_path = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'state', '') + 'state.json'
 
 pg_conf = {
     'dbname': os.getenv('POSTGRES_DB'),

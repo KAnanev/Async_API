@@ -12,7 +12,8 @@ router = APIRouter()
 
 @router.get('/{genre_id}', response_model=Genre)
 async def genre_details(
-        genre_id: str, genre_service: GenreService = Depends(get_genre_service)) -> Genre:
+        genre_id: str,
+        genre_service: GenreService = Depends(get_genre_service)) -> Genre:
     """
         Информация по жанру:
 
@@ -23,11 +24,14 @@ async def genre_details(
 
 
 @router.get('/', response_model=GenreList)
-async def genre_list(genre_service: GenreService = Depends(get_genre_service),
-                     from_: Optional[int] = Query(0, title='Начало выдачи', alias='from'),
-                     size_: Optional[int] = Query(10, title='Cколько выдать', alias='size'),
-                     query_: Optional[str] = Query(None, title='Поисковый запрос', alias='query'),
-                     page_: Optional[int] = Query(1, title='№ страницы', alias='page'), ) -> GenreList:
+async def genre_list(
+        genre_service: GenreService = Depends(get_genre_service),
+        from_: Optional[int] = Query(0, title='Начало выдачи', alias='from'),
+        size_: Optional[int] = Query(10, title='Cколько выдать', alias='size'),
+        query_: Optional[str] = Query(
+            None, title='Поисковый запрос', alias='query'),
+        page_: Optional[int] = Query(1, title='№ страницы', alias='page'),
+        ) -> GenreList:
     """
         Список жанров с постраничной навигацией и поисковым запросом:
         _http://0.0.0.0:8000/api/v1/genres/?from=0&size=10&query=query&page=1_

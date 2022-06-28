@@ -28,26 +28,37 @@ class BaseService:
         pass
 
     async def _put_item_to_cache(self, item: Union[Film, Person, Genre]):
-        await self.redis.set(str(item.uuid), item.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
+        await self.redis.set(
+            str(item.uuid), item.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
-    async def _get_from_cache(self, item_id: str) -> Optional[Union[Film, Person, Genre]]:
+    async def _get_from_cache(
+            self, item_id: str
+            ) -> Optional[Union[Film, Person, Genre]]:
         redis_data = await self.redis.get(item_id)
         if not redis_data:
             return None
         item = self.model.parse_raw(redis_data)
         return item
 
-    async def _put_items_to_cache(self, key_redis: str, items: Union[FilmList, PersonList, GenreList]):
-        await self.redis.set(key_redis, items.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
+    async def _put_items_to_cache(
+            self,
+            key_redis: str, items: Union[FilmList, PersonList, GenreList]):
+        await self.redis.set(
+            key_redis, items.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
-    async def _get_items_from_cache(self, key_redis: str) -> Optional[Union[FilmList, PersonList, GenreList]]:
+    async def _get_items_from_cache(
+            self,
+            key_redis: str
+            ) -> Optional[Union[FilmList, PersonList, GenreList]]:
         redis_data = await self.redis.get(key_redis)
         if not redis_data:
             return None
         item = self.model_lists.parse_raw(redis_data)
         return item
 
-    async def _get_item_from_elastic(self, item_id: str) -> Optional[Union[Film, Person, Genre]]:
+    async def _get_item_from_elastic(
+            self,
+            item_id: str) -> Optional[Union[Film, Person, Genre]]:
         try:
             item = await self.elastic.get(self.elastic_index_name, item_id)
             print(item)
@@ -55,7 +66,9 @@ class BaseService:
             return None
         return self.model(**item['_source'])
 
-    async def get_by_id(self, item_id: str) -> Optional[Union[Film, Person, Genre]]:
+    async def get_by_id(
+            self,
+            item_id: str) -> Optional[Union[Film, Person, Genre]]:
         item = await self._get_from_cache(str(item_id))
         if not item:
             item = await self._get_item_from_elastic(str(item_id))
@@ -66,7 +79,8 @@ class BaseService:
 
     async def get_all_items(self, params: Optional[dict]):
 
-        key_redis = 'Movies:{service}: query={query}, page_number={page}, page_size={size}'.format(**params)
+        key_redis = 'Movies:{service}: query={query}, page_number={page},\
+            page_size={size}'.format(**params)
         items = await self._get_items_from_cache(key_redis)
 
         if not items:

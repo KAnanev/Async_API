@@ -12,19 +12,25 @@ router = APIRouter()
 
 @router.get('/{person_id}', response_model=Person)
 async def person_details(
-        person_id: str, person_service: PersonService = Depends(get_person_service)) -> Person:
+        person_id: str,
+        person_service: PersonService = Depends(get_person_service)
+        ) -> Person:
     item = await item_details(person_id, person_service)
     return item
 
 
 @router.get('/', response_model=PersonList)
-async def person_list(person_service: PersonService = Depends(get_person_service),
-                      from_: Optional[int] = Query(0, title='Начало выдачи', alias='from'),
-                      size_: Optional[int] = Query(10, title='Cколько выдать', alias='size'),
-                      query_: Optional[str] = Query(None, title='Поисковый запрос', alias='query'),
-                      page_: Optional[int] = Query(1, title='№ страницы', alias='page'), ) -> PersonList:
+async def person_list(
+        person_service: PersonService = Depends(get_person_service),
+        from_: Optional[int] = Query(0, title='Начало выдачи', alias='from'),
+        size_: Optional[int] = Query(10, title='Cколько выдать', alias='size'),
+        query_: Optional[str] = Query(
+            None, title='Поисковый запрос', alias='query'),
+        page_: Optional[int] = Query(1, title='№ страницы', alias='page'),
+        ) -> PersonList:
     """
-        Список участников фильма с постраничной навигацией и поисковым запросом:
+        Список участников фильма с постраничной навигацией и поисковым
+        запросом:
         _http://0.0.0.0:8000/api/v1/persons/?from=0&size=10&query=query&page=1_
 
         - **from_**: Начало выдачи.

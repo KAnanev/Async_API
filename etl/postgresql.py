@@ -11,7 +11,8 @@ class PGLoader:
     def __init__(self, pg_conn, state_key='time'):
         self.conn = pg_conn
         self.cursor = self.conn.cursor()
-        self.state_value = State(JsonFileStorage(state_path)).get_state(state_key)
+        self.state_value = State(
+            JsonFileStorage(state_path)).get_state(state_key)
         self.batch_size = 500
         self.data = []
 

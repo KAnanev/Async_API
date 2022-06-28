@@ -39,7 +39,8 @@ def etl(index_name: str) -> None:
     pg_data = pg_load_data(index_name)
     number_records = len(pg_data)
     logger.info(
-        f'Подключились к Postgresql. Записей для загрузки в Elasticsearch индекс {index_name} — {number_records}.'
+        f'Подключились к Postgresql. Записей для загрузки в Elasticsearch \
+            индекс {index_name} — {number_records}.'
         )
     index = 0
     batch = []
@@ -68,5 +69,7 @@ if __name__ == '__main__':
     while True:
         for index_name in index_names:
             etl(index_name)
-        State(JsonFileStorage(state_path)).set_state('time', value=str(datetime.utcnow()))
+        State(
+            JsonFileStorage(state_path)
+        ).set_state('time', value=str(datetime.utcnow()))
         time.sleep(30)
