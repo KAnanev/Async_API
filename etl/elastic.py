@@ -35,7 +35,6 @@ class ElasticLoader:
         self.client.bulk(index=index_name, body=self.data, refresh=True)
 
     def load_data_es(self, pg_data: list, index_name: str) -> None:
-        print(pg_data)
         for row in pg_data:
             for i in row:
                 if row[i] is None:

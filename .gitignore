@@ -133,6 +133,3 @@ dmypy.json
 
 # Idea config pycharm
 .idea/
-
-# Docker compose dev
-docker-compose-dev.yml

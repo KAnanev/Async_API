@@ -61,7 +61,6 @@ class BaseService:
             item_id: str) -> Optional[Union[Film, Person, Genre]]:
         try:
             item = await self.elastic.get(self.elastic_index_name, item_id)
-            print(item)
         except NotFoundError:
             return None
         return self.model(**item['_source'])
@@ -82,6 +81,8 @@ class BaseService:
         key_redis = 'Movies:{service}: query={query}, page_number={page},\
             page_size={size}'.format(**params)
         items = await self._get_items_from_cache(key_redis)
+
+        items = False
 
         if not items:
 
