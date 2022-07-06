@@ -62,7 +62,7 @@ def etl(index_name: str) -> None:
             number_records -= number_records
 
 
-if __name__ == '__main__':
+def main():
     for index_name in index_names:
         create_index(index_name)
 
@@ -73,3 +73,7 @@ if __name__ == '__main__':
             JsonFileStorage(state_path)
         ).set_state('time', value=str(datetime.utcnow()))
         time.sleep(30)
+
+
+if __name__ == '__main__':
+    main()

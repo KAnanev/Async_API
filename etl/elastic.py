@@ -31,15 +31,16 @@ class ElasticLoader:
             logger.info(f'Индекс {name_index} уже существует')
 
     @backoff()
-    def bulk_data(self) -> None:
-        self.client.bulk(index='movies', body=self.data, refresh=True)
+    def bulk_data(self, index_name) -> None:
+        self.client.bulk(index=index_name, body=self.data, refresh=True)
 
     def load_data_es(self, pg_data: list, index_name: str) -> None:
+        print(pg_data)
         for row in pg_data:
             for i in row:
                 if row[i] is None:
                     row[i] = []
             self.data.append({"create": {"_index": index_name, "_id": row['uuid']}})
             self.data.append(row)
-        self.bulk_data()
+        self.bulk_data(index_name)
         logger.info(f'Данные в Elasticsearch индекс {index_name} загружены')
