@@ -1,5 +1,4 @@
-from datetime import date
-from typing import Optional, List
+from typing import List
 
 from pydantic import BaseModel
 
@@ -8,7 +7,6 @@ from models.base import MoviesBaseModel
 
 class Person(MoviesBaseModel):
     full_name: str
-    birth_date: Optional[date]
 
 
 class PersonList(BaseModel):
