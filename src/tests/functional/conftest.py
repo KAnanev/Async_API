@@ -4,18 +4,16 @@ from typing import Optional
 
 import aiohttp
 import aioredis
-import pytest
 import pytest_asyncio
 from elasticsearch import AsyncElasticsearch
 from multidict import CIMultiDictProxy
 
-from test_data import (genres_data, genres_index, movies_data, movies_index,
-                       persons_data, persons_index)
-from utils.es_loader import delete_index, load_data_es
-
 from .settings import settings
+from .test_data import (genres_data, genres_index, movies_data, movies_index,
+                        persons_data, persons_index)
+from .utils.es_loader import delete_index, load_data_es
 
-SERVICE_URL = f'{settings.API_HOST}:{settings.API_PORT}'
+SERVICE_URL = f'http://{settings.API_HOST}:{settings.API_PORT}'
 
 
 @dataclass
@@ -39,12 +37,12 @@ async def es_client():
     await client.close()
 
 
-# @pytest.fixture(scope='session')
-# async def redis_client():
-#     client = aioredis.create_redis_pool((settings.REDIS_HOST, settings.REDIS_PORT))
-#     yield client
-#     client.close()
-#     #await client.wait_closed()
+@pytest_asyncio.fixture(scope='session')
+async def redis_client():
+    pool = await aioredis.create_redis_pool((settings.REDIS_HOST, settings.REDIS_PORT))
+    yield pool
+    pool.close()
+    await pool.wait_closed()
 
 
 @pytest_asyncio.fixture(scope='session')
@@ -54,30 +52,30 @@ async def session():
     await session.close()
 
 
-# @pytest.fixture()
-# async def clear_redis_cashe(redis_client):
-#     await redis_client.flushall(async_op=True)
+@pytest_asyncio.fixture()
+async def clear_redis_cashe(redis_client):
+    await redis_client.flushall()
 
 
 @pytest_asyncio.fixture(scope='session')
 async def load_genres_data(es_client):
     await load_data_es(es_client, 'genres', genres_index.INDEX, genres_data.GENRES)
-    #yield
-    #await delete_index(es_client, 'genres')
+    yield
+    await delete_index(es_client, 'genres')
 
 
 @pytest_asyncio.fixture(scope='session')
 async def load_movies_data(es_client):
     await load_data_es(es_client, 'movies', movies_index.INDEX, movies_data.MOVIES)
-    #yield
-    #await delete_index(es_client, 'movies')
+    yield
+    await delete_index(es_client, 'movies')
 
 
 @pytest_asyncio.fixture(scope='session')
 async def load_persons_data(es_client):
     await load_data_es(es_client, 'persons', persons_index.INDEX, persons_data.PERSONS)
-    #yield
-    #await delete_index(es_client, 'persons')
+    yield
+    await delete_index(es_client, 'persons')
 
 
 @pytest_asyncio.fixture
