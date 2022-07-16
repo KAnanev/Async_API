@@ -1,11 +1,13 @@
-import sys
 import logging
+import sys
 from time import sleep
 
 from redis import Redis
 from redis.exceptions import ConnectionError
 
-redis = Redis('redis')
+from ..settings import settings
+
+redis = Redis(settings.REDIS_HOST)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 while True:

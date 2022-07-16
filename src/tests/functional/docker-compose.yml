@@ -19,7 +19,7 @@ services:
       - ../../.env
     depends_on:
       - redis
-      - elasticsearch
+      - elastic
     entrypoint: ["python", "-m", "gunicorn", "main:app",
                  "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
 
@@ -27,11 +27,13 @@ services:
     image: api-image
     depends_on:
       - api
+    env_file:
+      - ../../.env
     entrypoint: >
       sh -c "pip install -r tests/functional/requirements.txt
-      && python3 tests/functional/utils/wait_for_es.py
-      && python3 tests/functional/utils/wait_for_redis.py
-      && pytest tests/functional/src"
+      && python3 -m tests.functional.utils.wait_for_es.py
+      && python3 -m tests.functional.utils.wait_for_redis.py
+      && python3 -m pytest tests/functional/src"
 
 
 volumes:

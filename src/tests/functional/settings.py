@@ -12,7 +12,7 @@ class TestSettings(BaseSettings):
     ELASTIC_HOST: str = Field('elastic')
     ELASTIC_PORT: int = Field(9200)
     API_HOST: str = Field('http://127.0.0.1')
-    API_PORT: str = Field(80)
+    API_PORT: str = Field(8000)
     API_VERSION: str = Field('v1')
 
     class Config:

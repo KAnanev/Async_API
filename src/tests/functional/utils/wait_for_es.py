@@ -1,10 +1,12 @@
-import sys
 import logging
+import sys
 from time import sleep
 
 from elasticsearch import Elasticsearch
 
-es = Elasticsearch(['elasticsearch:9200'], verify_certs=True)
+from ..settings import settings
+
+es = Elasticsearch([f'{settings.ELASTIC_HOST}:{settings.ELASTIC_PORT}'], verify_certs=True)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 while True:

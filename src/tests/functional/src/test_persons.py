@@ -3,7 +3,8 @@ import random
 from uuid import uuid4
 
 import pytest
-from test_data.persons_data import PERSONS
+
+from ..test_data.persons_data import PERSONS
 
 
 @pytest.mark.asyncio
@@ -37,18 +38,6 @@ async def test_persons_query_params_type_error(load_persons_data, make_get_reque
         {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"},
         {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"}
         ]}
-
-
-# @pytest.mark.asyncio
-# async def test_persons_search(load_persons_data, make_get_request):
-#     person_to_find = [person for person in PERSONS if person['uuid'] == '3214cf58-8dbf-40ab-9185-77213933507e']
-#     await asyncio.sleep(1)
-
-#     response = await make_get_request('/persons/', {'query': 'Marquand'})
-
-#     assert response.status == 200
-#     assert response.body != []
-#     assert response.body == person_to_find
 
 
 @pytest.mark.asyncio

@@ -3,7 +3,8 @@ import random
 from uuid import uuid4
 
 import pytest
-from test_data.genres_data import GENRES
+
+from ..test_data.genres_data import GENRES
 
 
 @pytest.mark.asyncio
