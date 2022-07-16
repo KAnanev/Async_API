@@ -1,5 +1,15 @@
 # Проектная работа 5 спринта
 
+Ссылка на репозиторий https://github.com/Michail-Ign/Async_API_sprint_2.
+
+## Как запустить тесты
+ - Создайте в папке `src/` файл `.env` и заполните его нужными переменными окружения (образец в файле `.env.example`).
+ - Запустите docker-compose в папке `src/tests/functional`:
+
+```bash
+docker-compose -f src/tests/functional/docker-compose.yml up --build
+```
+
 В папке **tasks** ваша команда найдёт задачи, которые необходимо выполнить во втором спринте модуля "Сервис Async API".
 
 Как и в прошлом спринте, мы оценили задачи в стори поинтах.
