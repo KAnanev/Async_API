@@ -82,8 +82,6 @@ class BaseService:
             page_size={size}'.format(**params)
         items = await self._get_items_from_cache(key_redis)
 
-        items = False
-
         if not items:
 
             body = defaultdict(lambda: defaultdict(dict))
