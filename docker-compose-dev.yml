@@ -16,23 +16,23 @@ services:
       - 9200:9200
     environment:
       - discovery.type=single-node
-    volumes:
-      - elasticsearch:/usr/share/elasticsearch/data
+#    volumes:
+#      - elasticsearch:/usr/share/elasticsearch/data
 
   redis:
     image: 'redis:7'
     ports:
      - "6379:6379"
 
-  etl:
-    build: ./etl
-    depends_on:
-      - postgres
-      - elastic
-    env_file:
-      - ./etl/.env
-    volumes:
-      - state_volume:/etl/state
+  # etl:
+  #   build: ./etl
+  #   depends_on:
+  #     - postgres
+  #     - elastic
+  #   env_file:
+  #     - ./etl/.env
+  #   volumes:
+  #     - state_volume:/etl/state
 
   api:
     build:
@@ -43,7 +43,7 @@ services:
       - "8000:8000"
     depends_on:
       - redis
-      - elasticsearch
+      - elastic
 
   # web:
   #   image: 'nginx:1.22'
@@ -56,6 +56,6 @@ services:
   #     - ./nginx/conf.d:/etc/nginx/conf.d
 
 volumes:
-  elasticsearch:
-  state_volume:
+  #elasticsearch:
+  #state_volume:
   postgres:
