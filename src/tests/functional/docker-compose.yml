@@ -31,8 +31,8 @@ services:
       - ../../.env
     entrypoint: >
       sh -c "pip install -r tests/functional/requirements.txt
-      && python3 -m tests.functional.utils.wait_for_es.py
-      && python3 -m tests.functional.utils.wait_for_redis.py
+      && python3 -m tests.functional.utils.wait_for_redis
+      && python3 -m tests.functional.utils.wait_for_es
       && python3 -m pytest tests/functional/src"
 
 

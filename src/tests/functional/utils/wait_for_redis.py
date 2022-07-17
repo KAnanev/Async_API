@@ -1,20 +1,17 @@
-import logging
 import sys
-from time import sleep
 
 from redis import Redis
-from redis.exceptions import ConnectionError
 
 from ..settings import settings
+from .backoff import backoff
 
-redis = Redis(settings.REDIS_HOST)
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-while True:
-    try:
-        redis.ping()
-    except ConnectionError:
-        logging.log(level=logging.INFO, msg='not connection redis')
-        sleep(10)
-    else:
-        sys.exit(0)
+@backoff('redis')
+def connect_to_redis():
+    redis = Redis(settings.REDIS_HOST)
+    redis.ping()
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    connect_to_redis()
