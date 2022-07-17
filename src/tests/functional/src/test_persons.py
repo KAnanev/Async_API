@@ -1,5 +1,6 @@
 import asyncio
 import random
+from http import HTTPStatus
 from uuid import uuid4
 
 import pytest
@@ -13,7 +14,7 @@ async def test_random_existent_person(load_persons_data, make_get_request):
 
     response = await make_get_request(f'/persons/{random_person["uuid"]}')
 
-    assert response.status == 200
+    assert response.status == HTTPStatus.OK
     assert response.body == random_person
 
 
@@ -23,7 +24,7 @@ async def test_random_nonexistent_person(load_persons_data, make_get_request):
 
     response = await make_get_request(f'/persons/{nonexistent_person_id}')
 
-    assert response.status == 404
+    assert response.status == HTTPStatus.NOT_FOUND
     assert len(response.body) == 1
     assert response.body == {"detail": "Person not found"}
 
@@ -32,7 +33,7 @@ async def test_random_nonexistent_person(load_persons_data, make_get_request):
 async def test_persons_query_params_type_error(load_persons_data, make_get_request):
     response = await make_get_request('/persons/', {"from": "f", "size": "s", "page": "k"})
 
-    assert response.status == 422
+    assert response.status == HTTPStatus.UNPROCESSABLE_ENTITY
     assert response.body == {"detail": [
         {"loc": ["query", "from"], "msg":"value is not a valid integer", "type": "type_error.integer"},
         {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"},
@@ -45,6 +46,6 @@ async def test_persons_endpoint(load_persons_data, make_get_request):
     await asyncio.sleep(1)
     response = await make_get_request('/persons/?size=50')
 
-    assert response.status == 200
+    assert response.status == HTTPStatus.OK
     assert len(response.body) == len(PERSONS)
     assert response.body == PERSONS
