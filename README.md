@@ -4,11 +4,19 @@
 
 ## Как запустить тесты
  - Создайте в папке `src/` файл `.env` и заполните его нужными переменными окружения (образец в файле `.env.example`).
- - Запустите docker-compose в папке `src/tests/functional`:
+ - Запустите `docker-compose.yml` в папке `src/tests/functional`:
 
 ```bash
 docker-compose -f src/tests/functional/docker-compose.yml up --build
 ```
+
+Если Docker Compose при запуске выдаёт ошибку `Error response from daemon: pull access denied for api-image, repository does not exist or may require 'docker login': denied: requested access to the resource is denied`,
+то соберите сначала образ сервиса `api`:
+
+```bash
+docker-compose -f src/tests/functional/docker-compose.yml build api
+```
+---
 
 В папке **tasks** ваша команда найдёт задачи, которые необходимо выполнить во втором спринте модуля "Сервис Async API".
 
