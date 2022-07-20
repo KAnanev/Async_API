@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 
-from api.v1.base import item_details, item_list
+from api.v1.base import item_details, item_list, PaginatedParams
 from models.genre import Genre, GenreList
 from services.genres import GenreService, get_genre_service
 
@@ -26,22 +26,22 @@ async def genre_details(
 @router.get('/', response_model=GenreList)
 async def genre_list(
         genre_service: GenreService = Depends(get_genre_service),
-        from_: Optional[int] = Query(0, title='Начало выдачи', alias='from'),
-        size_: Optional[int] = Query(10, title='Cколько выдать', alias='size'),
-        query_: Optional[str] = Query(
-            None, title='Поисковый запрос', alias='query'),
-        page_: Optional[int] = Query(1, title='№ страницы', alias='page'),
-        ) -> GenreList:
+        sort_: Optional[str] = Query(None, title='Сортировка', alias='sort'),
+        query_: Optional[str] = Query(None, title='Поисковый запрос', alias='query'),
+        page_: Optional[int] = Query(PaginatedParams().page_number, title='№ страницы', alias='page'),
+        size_: Optional[int] = Query(PaginatedParams().page_size, title='Cколько выдать', alias='size'),
+) -> GenreList:
     """
         Список жанров с постраничной навигацией и поисковым запросом:
         _http://0.0.0.0:8000/api/v1/genres/?from=0&size=10&query=query&page=1_
 
-        - **from_**: Начало выдачи.
-        - **size_**: Cколько выдать.
+        - **sort_**: Сортировка.
         - **query_**: Поисковый запрос.
         - **page_**: № страницы.
+        - **size_**: Cколько выдать.
+
     """
-    params = {'from': from_, 'size': size_, 'page': page_, 'query': query_}
+    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_,}
 
     genres = await item_list(service=genre_service, params=params)
     return genres

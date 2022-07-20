@@ -2,12 +2,19 @@ from http import HTTPStatus
 from typing import Union
 
 from fastapi import HTTPException
+from pydantic import BaseSettings, PositiveInt, BaseModel
+
 from models.film import Film, FilmList
 from models.genre import Genre, GenreList
 from models.person import Person, PersonList
 from services.films import FilmService
 from services.genres import GenreService
 from services.persons import PersonService
+
+
+class PaginatedParams(BaseModel):
+    page_number: PositiveInt = 1
+    page_size: PositiveInt = 50
 
 
 async def item_details(
