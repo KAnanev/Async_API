@@ -53,6 +53,18 @@ async def test_genres_search(load_genres_data, make_get_request):
 
 
 @pytest.mark.asyncio
+async def test_genres_page_size(load_genres_data, make_get_request):
+
+    response_firts_page = await make_get_request('/genres/', {"page": "1", "size": "15"})
+    response_second_page = await make_get_request('/genres/', {"page": "2", "size": "15"})
+
+    assert response_firts_page.status == HTTPStatus.OK
+    assert response_second_page.status == HTTPStatus.OK
+    assert len(response_firts_page.body) == 15
+    assert len(response_second_page.body) == len(GENRES) % 15
+
+
+@pytest.mark.asyncio
 async def test_genres_endpoint(load_genres_data, make_get_request):
     await asyncio.sleep(1)
     response = await make_get_request('/genres/?size=50')
