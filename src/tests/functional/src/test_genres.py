@@ -31,13 +31,12 @@ async def test_random_nonexistent_genre(load_genres_data, make_get_request):
 
 @pytest.mark.asyncio
 async def test_genres_query_params_type_error(load_genres_data, make_get_request):
-    response = await make_get_request('/genres/', {"from": "f", "size": "s", "page": "k"})
+    response = await make_get_request('/genres/', {"page": "k", "size": "s"})
 
     assert response.status == HTTPStatus.UNPROCESSABLE_ENTITY
     assert response.body == {"detail": [
-        {"loc": ["query", "from"], "msg":"value is not a valid integer", "type": "type_error.integer"},
-        {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"},
-        {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"}
+        {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"},
+        {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"}
         ]}
 
 

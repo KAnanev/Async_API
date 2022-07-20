@@ -32,13 +32,12 @@ async def test_random_nonexistent_film(load_movies_data, make_get_request):
 
 @pytest.mark.asyncio
 async def test_films_query_params_type_error(load_movies_data, make_get_request):
-    response = await make_get_request('/films/', {"from": "f", "size": "s", "page": "k"})
+    response = await make_get_request('/films/', {"page": "p", "size": "s"})
 
     assert response.status == HTTPStatus.UNPROCESSABLE_ENTITY
     assert response.body == {"detail": [
-        {"loc": ["query", "from"], "msg":"value is not a valid integer", "type": "type_error.integer"},
-        {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"},
-        {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"}
+        {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"},
+        {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"}
         ]}
 
 
