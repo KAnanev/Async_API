@@ -2,11 +2,10 @@ from http import HTTPStatus
 from typing import Union
 
 from fastapi import HTTPException
-from pydantic import BaseSettings, PositiveInt, BaseModel
-
 from models.film import Film, FilmList
 from models.genre import Genre, GenreList
 from models.person import Person, PersonList
+from pydantic import BaseModel, PositiveInt
 from services.films import FilmService
 from services.genres import GenreService
 from services.persons import PersonService

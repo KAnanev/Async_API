@@ -1,6 +1,6 @@
 import types
 from collections import defaultdict
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 from aioredis import Redis
 from elasticsearch import AsyncElasticsearch, NotFoundError
@@ -123,7 +123,6 @@ class BaseService:
                     body['query']['bool']['should'].append(match)
             else:
                 body['query']['match_all'] = {}
-            print(body)
 
             items = await self.elastic.search(
                 index=self.elastic_index_name,

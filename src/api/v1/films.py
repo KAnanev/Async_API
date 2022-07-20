@@ -1,8 +1,7 @@
 from typing import Optional
 
+from api.v1.base import PaginatedParams, item_details, item_list
 from fastapi import APIRouter, Depends, Query
-
-from api.v1.base import item_details, item_list, PaginatedParams
 from models.film import Film, FilmList
 from services.films import FilmService, get_film_service
 
@@ -33,17 +32,16 @@ async def film_list(
         size_: Optional[int] = Query(PaginatedParams().page_size, title='Cколько выдать', alias='size'),
 ) -> FilmList:
     """
-        Список жанров с постраничной навигацией и поисковым запросом:
-        _http://0.0.0.0:8000/api/v1/genres/?from=0&size=10&query=query&page=1_
+        Список фильмов с сортировкой по рейтингу IMDB по убыванию, постраничной навигацией и поисковым запросом:
+        http://0.0.0.0:8000/api/v1/films/?sort=-imdb_rating&query=Endor&page=1&size=10
 
-        - **sort_**: Сортировка.
-        - **query_**: Поисковый запрос.
-        - **page_**: № страницы.
-        - **size_**: Cколько выдать.
-
+        - **sort**: Сортировка.
+        - **query**: Поисковый запрос.
+        - **page**: № страницы.
+        - **size**: Cколько выдать.
     """
 
-    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_,}
+    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_}
 
     films = await item_list(service=film_service, params=params)
     return films

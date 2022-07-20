@@ -1,8 +1,7 @@
 from typing import Optional
 
+from api.v1.base import PaginatedParams, item_details, item_list
 from fastapi import APIRouter, Depends, Query
-
-from api.v1.base import item_details, item_list, PaginatedParams
 from models.person import Person, PersonList
 from services.persons import PersonService, get_person_service
 
@@ -15,6 +14,11 @@ async def person_details(
         person_id: str,
         person_service: PersonService = Depends(get_person_service)
         ) -> Person:
+    """
+        Информация по персоне:
+
+        - **person_id**: ID персоны.
+    """
     item = await item_details(person_id, person_service)
     return item
 
@@ -28,17 +32,15 @@ async def person_list(
         size_: Optional[int] = Query(PaginatedParams().page_size, title='Cколько выдать', alias='size'),
 ) -> PersonList:
     """
-        Список жанров с постраничной навигацией и поисковым запросом:
-        _http://0.0.0.0:8000/api/v1/genres/?from=0&size=10&query=query&page=1_
+        Список персон с постраничной навигацией и поисковым запросом:
+        http://0.0.0.0:8000/api/v1/persons/?query=Lucas&page=1&size=10
 
-        - **sort_**: Сортировка.
-        - **query_**: Поисковый запрос.
-        - **page_**: № страницы.
-        - **size_**: Cколько выдать.
-
+        - **query**: Поисковый запрос.
+        - **page**: № страницы.
+        - **size**: Cколько выдать.
     """
 
-    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_,}
+    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_}
 
     persons = await item_list(service=person_service, params=params)
     return persons

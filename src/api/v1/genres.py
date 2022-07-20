@@ -1,8 +1,7 @@
 from typing import Optional
 
+from api.v1.base import PaginatedParams, item_details, item_list
 from fastapi import APIRouter, Depends, Query
-
-from api.v1.base import item_details, item_list, PaginatedParams
 from models.genre import Genre, GenreList
 from services.genres import GenreService, get_genre_service
 
@@ -33,15 +32,14 @@ async def genre_list(
 ) -> GenreList:
     """
         Список жанров с постраничной навигацией и поисковым запросом:
-        _http://0.0.0.0:8000/api/v1/genres/?from=0&size=10&query=query&page=1_
+        http://0.0.0.0:8000/api/v1/genres/?query=Western&page=1&size=10
 
-        - **sort_**: Сортировка.
-        - **query_**: Поисковый запрос.
-        - **page_**: № страницы.
-        - **size_**: Cколько выдать.
+        - **query**: Поисковый запрос.
+        - **page**: № страницы.
+        - **size**: Cколько выдать.
 
     """
-    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_,}
+    params = {'sort': sort_, 'query': query_, 'page': page_, 'size': size_}
 
     genres = await item_list(service=genre_service, params=params)
     return genres

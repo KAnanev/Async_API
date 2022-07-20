@@ -1,11 +1,11 @@
 from functools import lru_cache
 
-from fastapi import Depends
-
 from db.base import AsyncCacheStorage, AsyncStorage
 from db.elastic import get_elastic
 from db.redis import get_redis
+from fastapi import Depends
 from models.genre import Genre, GenreList
+
 from services.base import BaseService
 
 
