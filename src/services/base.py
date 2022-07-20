@@ -1,5 +1,6 @@
+import types
 from collections import defaultdict
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from aioredis import Redis
 from elasticsearch import AsyncElasticsearch, NotFoundError
@@ -8,6 +9,26 @@ from models.genre import Genre, GenreList
 from models.person import Person, PersonList
 
 FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5  # 5 минут
+
+MAP_SORT_ES = types.MappingProxyType(
+    {
+        'imdb_rating': 'imdb_rating',
+    }
+)
+
+
+def get_sort_for_es(sort_value: str) -> List[dict]:
+    sorter = 'asc'
+    result = None
+    if value := MAP_SORT_ES.get(sort_value.lstrip('-')):
+        if sort_value.startswith('-'):
+            sorter = 'desc'
+        result = [
+            {
+                value: sorter
+            }
+        ]
+    return result
 
 
 class BaseService:
@@ -33,7 +54,7 @@ class BaseService:
 
     async def _get_from_cache(
             self, item_id: str
-            ) -> Optional[Union[Film, Person, Genre]]:
+    ) -> Optional[Union[Film, Person, Genre]]:
         redis_data = await self.redis.get(item_id)
         if not redis_data:
             return None
@@ -49,7 +70,7 @@ class BaseService:
     async def _get_items_from_cache(
             self,
             key_redis: str
-            ) -> Optional[Union[FilmList, PersonList, GenreList]]:
+    ) -> Optional[Union[FilmList, PersonList, GenreList]]:
         redis_data = await self.redis.get(key_redis)
         if not redis_data:
             return None
@@ -78,7 +99,7 @@ class BaseService:
 
     async def get_all_items(self, params: Optional[dict]):
 
-        key_redis = 'Movies:{service}: query={query}, page_number={page},\
+        key_redis = 'Movies:{service}: sort={sort}, query={query}, page_number={page},\
             page_size={size}'.format(**params)
         items = await self._get_items_from_cache(key_redis)
 
@@ -89,6 +110,10 @@ class BaseService:
             body['from'] = (params['page'] * params['size']) - params['size']
             body['size'] = params['size']
 
+            if params['sort']:
+                if sort_value := get_sort_for_es(params['sort']):
+                    body['sort'] = sort_value
+
             if params['query']:
                 body['query']['bool']['should'] = []
                 for field, weight in self.fields.items():
@@ -98,6 +123,7 @@ class BaseService:
                     body['query']['bool']['should'].append(match)
             else:
                 body['query']['match_all'] = {}
+            print(body)
 
             items = await self.elastic.search(
                 index=self.elastic_index_name,
