@@ -1,6 +1,7 @@
 import asyncio
 import random
 from http import HTTPStatus
+from operator import itemgetter
 from uuid import uuid4
 
 import pytest
@@ -39,6 +40,17 @@ async def test_films_query_params_type_error(load_movies_data, make_get_request)
         {"loc": ["query", "page"], "msg":"value is not a valid integer", "type": "type_error.integer"},
         {"loc": ["query", "size"], "msg":"value is not a valid integer", "type": "type_error.integer"}
         ]}
+
+
+@pytest.mark.asyncio
+async def test_films_sorting_imdb(load_movies_data, make_get_request):
+    sorted_films = sorted(MOVIES, key=itemgetter('imdb_rating'), reverse=True)
+    await asyncio.sleep(1)
+
+    response = await make_get_request('/films/', {'sort': '-imdb_rating'})
+
+    assert response.status == HTTPStatus.OK
+    assert response.body == sorted_films
 
 
 @pytest.mark.asyncio
